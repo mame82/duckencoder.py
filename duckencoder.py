@@ -382,14 +382,17 @@ Creds to: 	hak5Darren for original duckencoder
 		https://github.com/hak5darren/USB-Rubber-Ducky
 
 Converts payload created by DuckEncoder to sourcefile for DigiSpark Sketch
+Extended to pass data from stdin to stdout
 
-Usage: python duckencoder.py -i [file ..]		Encode DuckyScript source given by -i file
+Usage: python duckencoder.py -i [file ..]			Encode DuckyScript source given by -i file
    or: python duckencoder.py -i [file ..] -o [outfile ..]	Encode DuckyScript source to outputfile given by -o
 
 Arguments:
    -i [file ..] 	Input file in DuckyScript format
    -o [file ..] 	Output File for encoded payload, defaults to inject.bin
    -l <layout name>	Keyboard Layout (us/fr/pt/de ...)
+   -p, --pastthru	Read script from stdin and print result on stdout (ignore -i, -o)
+   -r, --rawpassthru    Like passthru, but input is read as STRING instead of duckyscript
    -h			Print this help screen
 '''
 	print(usagescr)
@@ -411,8 +414,9 @@ def main(argv):
 	ofile = "inject.bin"
 	payload = None
 	lang="us"
+	rawpassthru = False
 	try:
-		opts, args = getopt.getopt(argv, "hi:o:l:", ["help", "input=", "output=", "language="])
+		opts, args = getopt.getopt(argv, "hi:o:l:pr", ["help", "input=", "output=", "language=", "passthru", "rawpassthru"])
 	except getopt.GetoptError:
 		usage()
 		sys.exit(2)
@@ -429,22 +433,49 @@ def main(argv):
 				source = f.read()
 		elif opt in ("-l", "--language"):
 			lfile = "./resources/"+ arg +".properties"
-			if not os.path.isfile(lfile) or not os.access(ifile, os.R_OK):
-				print("Language file " + ifile + " doesn't exist or isn't readable")
+			if not os.path.isfile(lfile) or not os.access(lfile, os.R_OK):
+				print("Language file " + lfile + " doesn't exist or isn't readable")
 				sys.exit(2)
 			lang=arg
 		elif opt in ("-o", "--output"):
 			ofile = arg
+		elif opt in ("-p", "--passsthru"):
+			# read input from stdin, no outfile
+			ofile = None
+			source = ""
+			for line in sys.stdin:
+				source += line
+			#print "Source: " + source
+		elif opt in ("-r", "--rawpasssthru"):
+			# read input from stdin, no outfile
+			rawpassthru = True
+			ofile = None
+			source = ""
+			for line in sys.stdin:
+				source += line
+
 	if source is None:
 		print("You have to provide a source file (-i option)")
 		sys.exit(2)
 
-	# generate source code for Sketch
-	result = generatePayload(source, lang)
+	if rawpassthru == True:
+		# parse raw ascii data
+		result = ""
+		keyboard=readResource("./resources/keyboard.properties")
+		language=readResource("./resources/" + lang + ".properties")
+		for line in source:
+			for c in line:
+				keydata = ASCIIChar2USBBytes(c, keyboard, language)
+				if len(keydata) > 0:
+					result  += keydata
+	else:
+		# parse source as DuckyScript
+		result = generatePayload(source, lang)
 
 	if ofile is None:
 		# print to stdout
-		print(result)
+		#print(result)
+		sys.stdout.write(result)
 	else:
 		# write to ofile
 		with open(ofile, "w") as f:
