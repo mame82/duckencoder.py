@@ -1,5 +1,5 @@
-Python port of infamous of hak5 DuckEncoder
-by MaMe82
+MaMe82's Python port of infamous hak5 DuckEncoder
+
 
     Duckencoder python port 1.0 by MaMe82
     =====================================
