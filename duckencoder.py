@@ -402,14 +402,17 @@ Arguments:
 
 def generatePayload(source, lang):
 	# check if language file exists
-	keyboard=readResource("./resources/keyboard.properties")
-	language=readResource("./resources/" + lang + ".properties")
+        script_dir = os.path.dirname(__file__)
+        keyboard=readResource(script_dir + "/resources/keyboard.properties")
+        language=readResource(script_dir + "/resources/" + lang + ".properties")
 
 	payload = parseScript(source, keyboard, language)
 	return payload
 
 
 def main(argv):
+	script_dir = os.path.dirname(__file__)
+
 	ifile = ""
 	source = None
 	ofile = "inject.bin"
@@ -433,7 +436,8 @@ def main(argv):
 			with open(ifile, "rb") as f:
 				source = f.read()
 		elif opt in ("-l", "--language"):
-			lfile = "./resources/"+ arg +".properties"
+			lfile = script_dir + "/resources/"+ arg +".properties"
+
 			if not os.path.isfile(lfile) or not os.access(lfile, os.R_OK):
 				print("Language file " + lfile + " doesn't exist or isn't readable")
 				sys.exit(2)
@@ -462,8 +466,8 @@ def main(argv):
 	if rawpassthru == True:
 		# parse raw ascii data
 		result = ""
-		keyboard=readResource("./resources/keyboard.properties")
-		language=readResource("./resources/" + lang + ".properties")
+		keyboard=readResource(script_dir + "/resources/keyboard.properties")
+		language=readResource(script_dir + "/resources/" + lang + ".properties")
 		for line in source:
 			for c in line:
 				keydata = ASCIIChar2USBBytes(c, keyboard, language)
