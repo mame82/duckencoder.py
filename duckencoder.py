@@ -403,6 +403,8 @@ Arguments:
 def generatePayload(source, lang):
 	# check if language file exists
         script_dir = os.path.dirname(__file__)
+	if script_dir == "":
+		script_dir = "."
         keyboard=readResource(script_dir + "/resources/keyboard.properties")
         language=readResource(script_dir + "/resources/" + lang + ".properties")
 
