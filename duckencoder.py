@@ -263,7 +263,7 @@ class DuckEncoder:
                                     "VOLUMEDOWN": "MEDIA_VOLUME_DEC",
                                     "SCROLLLOCK": "SCROLL_LOCK",
                                     "NUMLOCK": "NUM_LOCK",
-                                    "CAPSLOCK": "CAPS_LOCK"}.get(keyinstr, keyinstr[0:1])
+                                    "CAPSLOCK": "CAPS_LOCK"}.get(keyinstr, keyinstr[0:1].upper())
 
                         # second attempt
                         key_entry = "KEY_" + keyinstr.strip()
