@@ -33,7 +33,7 @@ class DuckEncoder:
                 result = ""
 
                 # split line into command and arguments
-                cmd, args = line.strip(" ", 1)
+                cmd, args = line.split(" ", 1)
                 cmd = cmd.strip()
                 args = args.strip()
 
@@ -58,7 +58,7 @@ class DuckEncoder:
                                 return ""
 
                         # split away delay argument from remaining string
-                        delay, _, chars = args.strip(" ", 1)
+                        delay, _, chars = args.split(" ", 1)
 
                         # build delaystr
                         delay = int(delay.strip())
