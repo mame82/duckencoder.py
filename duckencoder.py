@@ -23,23 +23,17 @@ class DuckEncoder:
                         if len(l) == 0:
                                 continue
 
-                        key, _, val = l.partition("=")
+                        key, val = l.split("=", 1)
                         result_dict[key.strip()] = val.strip()
 
                 return result_dict
-
-        @staticmethod
-        def altReadResource(filename):
-                with open(filename, "r") as f:
-                        lines = (line.strip().split("//")[0].partition("=") for line in f)
-                        return {line[0].strip(): line[-1].strip() for line in lines if line}
 
         @staticmethod
         def parseScriptLine(line, keyProp, langProp):
                 result = ""
 
                 # split line into command and arguments
-                cmd, _, args = line.partition(" ")
+                cmd, args = line.partition(" ", 1)
                 cmd = cmd.strip()
                 args = args.strip()
 
