@@ -33,7 +33,7 @@ class DuckEncoder:
                 result = ""
 
                 # split line into command and arguments
-                cmd, args = line.split(" ", 1)
+                cmd, _, args = line.partition(" ")
                 cmd = cmd.strip()
                 args = args.strip()
 
