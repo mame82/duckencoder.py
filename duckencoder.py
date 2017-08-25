@@ -181,7 +181,7 @@ class DuckEncoder:
 
                 else:
                         # Everything else is handled as direct key input (worst case would be the first letter of a line interpreted as single key)
-                        result = DuckEncoder.keyInstr2USBBytes(args, keyProp, langProp) + "\x00"
+                        result = DuckEncoder.keyInstr2USBBytes(cmd, keyProp, langProp) + "\x00"
 
                 return result
 
