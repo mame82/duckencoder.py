@@ -58,7 +58,7 @@ class DuckEncoder:
                                 return ""
 
                         # split away delay argument from remaining string
-                        delay, _, chars = args.split(" ", 1)
+                        delay, chars = args.split(" ", 1)
 
                         # build delaystr
                         delay = int(delay.strip())
@@ -246,6 +246,7 @@ class DuckEncoder:
                 if keyval is None:
                         keyinstr = keyinstr.strip().upper()
                         keyinstr = {"ESCAPE": "ESC",
+                                    "RETURN": "ENTER",
                                     "DEL": "DELETE",
                                     "BREAK": "PAUSE",
                                     "CONTROL": "CTRL",
@@ -263,19 +264,21 @@ class DuckEncoder:
                                     "VOLUMEDOWN": "MEDIA_VOLUME_DEC",
                                     "SCROLLLOCK": "SCROLL_LOCK",
                                     "NUMLOCK": "NUM_LOCK",
-                                    "CAPSLOCK": "CAPS_LOCK"}.get(keyinstr, keyinstr[0:1].upper())
+                                    "CAPSLOCK": "CAPS_LOCK"}.get(keyinstr)
 
                         # second attempt
-                        key_entry = "KEY_" + keyinstr.strip()
-
-                        if key_entry in keyProp:
-                                keyval = keyProp[key_entry]
-                        elif key_entry in langProp:
-                                keyval = langProp[key_entry]
+                        if keyinstr:
+                                key_entry = "KEY_" + keyinstr.strip()
+        
+                                if key_entry in keyProp:
+                                        keyval = keyProp[key_entry]
+                                elif key_entry in langProp:
+                                        keyval = langProp[key_entry]
 
                 if keyval is None:
-                        print("Error: No keycode entry for " + key_entry)
-                        print("Warning this could corrupt generated output file")
+                        # avoid prints to STDOUT, which could be carried over raw data
+                        sys.stderr.write("Error: No keycode entry for " + key_entry + "\n")
+                        sys.stderr.write("Warning this could corrupt generated output file\n")
                         return ""
                 if keyval[0:2].upper() == "0X":
                         # conver to int from hex
