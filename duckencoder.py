@@ -489,7 +489,7 @@ def main(argv):
         '''
         Parses command line
         '''
-        script_dir = os.path.dirname(__file__)
+        script_dir = os.path.dirname(__file__) or "."
 
         ifile = ""
         source = None
