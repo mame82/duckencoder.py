@@ -560,7 +560,7 @@ def main(argv):
                 sys.stdout.write(result)
         else:
                 # write to ofile
-                with open(ofile, "w") as f:
+                with open(ofile, "wb") as f:
                         f.write(result)
 
 
